@@ -35,14 +35,13 @@ class BackendController {
     @GetMapping("/get_rooms")
     fun get_rooms(@RequestParam("user_id") user_id: Int): MutableList<JsonObject> {
         var rooms: MutableList<JsonObject> = mutableListOf()
-        var json = JsonObject()
         ResourcesLists.RoomList.forEach{
+            var json = JsonObject()
             json["room_id"] = it.id
             json["room_name"] = it.name
             json["user_count"] = it.UserCount
             json["room_picture"] = it.RoomPicture
             rooms.add(json)
-            json.clear()
         }
         return rooms
     }
@@ -142,7 +141,7 @@ class BackendController {
         val user = AuthUser(username, password)
         user.mail = mail
         ResourcesLists.RegistredList.add(user)
-        return 0 // Всё збс
+        return 0 // No error
     }
 
     @GetMapping("/get_uinfo")
@@ -173,7 +172,6 @@ class BackendController {
         val timeout = JsonObject()
         timeout["timeout"] = "timeout"
         var longpoll = user?.longpoll
-
         GlobalScope.launch {
             delay(40_000)
             if (longpoll == user?.longpoll) {
@@ -184,9 +182,7 @@ class BackendController {
                 }
             }
         }
-
         val result = DeferredResult<JsonObject>(15000, timeout)
-
         user?.UpdateLongPoll(result)
         return result
     }

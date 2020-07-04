@@ -17,9 +17,11 @@ object GenerateID {
         FreeRoomIdList.remove(id)
         return id
     }
+
     fun RoomIdNeNyzhen(id: Int) {
         FreeRoomIdList.add(id)
     }
+
     fun getNewUID(): Int {
         if (FreeUserIdList.isEmpty())
             return LastUserId.incrementAndGet()
@@ -27,6 +29,7 @@ object GenerateID {
         FreeUserIdList.remove(id)
         return id
     }
+
     fun UserIdNeNyzhen(id: Int) {
         FreeUserIdList.add(id)
     }
@@ -71,8 +74,8 @@ open class User(var username: String) {
 
     fun CreateRoom(name: String) {
         val new_room = Room(GenerateID.getNewRID(), name)
-        new_room.AddToUserList(this)
         ResourcesLists.RoomList.add(new_room)
+        new_room.AddToUserList(this)
     }
 
     fun UpdateLongPoll(result: DeferredResult<JsonObject>) {
@@ -98,8 +101,7 @@ open class User(var username: String) {
     }
 }
 
-class AuthUser(username: String, var password: String) :
-        User(username) {
+class AuthUser(username: String, var password: String) : User(username) {
     var mail: String = ""
 
     init {
@@ -115,7 +117,8 @@ class AuthUser(username: String, var password: String) :
 @Serializable
 class Room(var id: Int, var name: String) {
     var UserList: MutableList<User> = mutableListOf()
-    var UserCount: Int = UserList.size
+    val UserCount: Int
+        get() = UserList.size
     var RoomPicture: String = ""
 
     fun UserLeaveRoom(id: Int) {
@@ -140,7 +143,6 @@ class Room(var id: Int, var name: String) {
             it.AddToUpdateList(contextToAll)
         }
     }
-
 
 
     fun SendMessage(id: Int, message: String) {
